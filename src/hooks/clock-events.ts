@@ -29,9 +29,23 @@ export default function useClockEvents(clock: ElementRef, handleChange: CalcTime
 
 	// mouse events
 	function handleMouseDown(e: React.MouseEvent<HTMLElement>) {
-		if (disableMouse.current) {
+		if (disableMouse.current || !clock.current) {
 			return
 		}
+
+		let target = e.target as HTMLElement;
+		let found = false;
+		while (target !== document.body) {
+			if (target === clock.current) {
+				found = true;
+				break;
+			}
+			target = target.parentElement;
+		}
+		if (!found) {
+			return;
+		}
+
 		dragCount.current = 0
 
 		// add listeners
